@@ -1,4 +1,4 @@
-# INFR 1350U Practical Midtermhaha
+# INFR 1350U Practical Midterm
 ## Members:
 > **Jeffrey Li - Programming, Designing, Art**
 > 
