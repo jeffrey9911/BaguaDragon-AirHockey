@@ -94,12 +94,15 @@ void GlDebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsi
 	}
 }
 
+//// Window Setup ////
+#pragma region GeneralSetUp
 // Stores our GLFW window in a global variable for now
 GLFWwindow* window;
 // The current size of our window in pixels
-glm::ivec2 windowSize = glm::ivec2(800, 800);
+glm::ivec2 windowSize = glm::ivec2(1920, 1080);
 // The title of our GLFW window
-std::string windowTitle = "INFR-1350U";
+std::string windowTitle = "INFR1350U-Midterm-Airhockey-Jeffrey&Justin";
+
 
 // using namespace should generally be avoided, and if used, make sure it's ONLY in cpp files
 using namespace Gameplay;
@@ -149,6 +152,7 @@ bool initGLAD() {
 	}
 	return true;
 }
+#pragma endregion
 
 /// <summary>
 /// Draws a widget for saving or loading our scene
@@ -204,7 +208,10 @@ bool DrawLightImGui(const Scene::Sptr& scene, const char* title, int ix) {
 	return result;
 }
 
+
 int main() {
+//// Initialize ////
+	#pragma region GeneralInitialize
 	Logger::Init(); // We'll borrow the logger from the toolkit, but we need to initialize it
 
 	//Initialize GLFW
@@ -240,6 +247,7 @@ int main() {
 	ComponentManager::RegisterType<RotatingBehaviour>();
 	ComponentManager::RegisterType<JumpBehaviour>();
 	ComponentManager::RegisterType<MaterialSwapBehaviour>();
+	#pragma endregion
 
 	// GL states, we'll enable depth testing and backface fulling
 	glEnable(GL_DEPTH_TEST);
@@ -254,62 +262,104 @@ int main() {
 		scene = Scene::Load("scene.json");
 	} 
 	else {
-		// Create our OpenGL resources
+
+//// Resources ////
+		#pragma region OpenGL Resources Loading
+		
+		//// Shaders
 		Shader::Sptr uboShader = ResourceManager::CreateAsset<Shader>(std::unordered_map<ShaderPartType, std::string>{
 			{ ShaderPartType::Vertex, "shaders/vertex_shader.glsl" }, 
 			{ ShaderPartType::Fragment, "shaders/frag_blinn_phong_textured.glsl" }
 		}); 
 
+		//// Monkey & Box (will be removed later)
 		MeshResource::Sptr monkeyMesh = ResourceManager::CreateAsset<MeshResource>("Monkey.obj");
 		Texture2D::Sptr    boxTexture = ResourceManager::CreateAsset<Texture2D>("textures/box-diffuse.png");
-		Texture2D::Sptr    monkeyTex  = ResourceManager::CreateAsset<Texture2D>("textures/monkey-uvMap.png");  
+		Texture2D::Sptr    monkeyTex  = ResourceManager::CreateAsset<Texture2D>("textures/monkey-uvMap.png");
 		
+		//// Table
+		MeshResource::Sptr mesh_table = ResourceManager::CreateAsset<MeshResource>("gObj_table/table.obj");
+		Texture2D::Sptr tex_table = ResourceManager::CreateAsset<Texture2D>("gObj_table/tex_table.png");
+
+		//// Puck
+		MeshResource::Sptr mesh_puck = ResourceManager::CreateAsset<MeshResource>("gObj_puck/puck.obj");
+		Texture2D::Sptr tex_puck = ResourceManager::CreateAsset<Texture2D>("gObj_puck/Black.jpg");
+
+		//// ENDREGION
+		#pragma endregion	
+
 		// Create an empty scene
 		scene = std::make_shared<Scene>();
-
 		// I hate this
 		scene->BaseShader = uboShader;
 
-		// Create our materials
+//// Materials ////
+		#pragma region Material Creation
+
 		Material::Sptr boxMaterial = ResourceManager::CreateAsset<Material>();
 		{
 			boxMaterial->Name = "Box";
 			boxMaterial->MatShader = scene->BaseShader;
 			boxMaterial->Texture = boxTexture;
 			boxMaterial->Shininess = 2.0f;
-		}	
+		}
 
+		//// Monkey
 		Material::Sptr monkeyMaterial = ResourceManager::CreateAsset<Material>();
 		{
 			monkeyMaterial->Name = "Monkey";
 			monkeyMaterial->MatShader = scene->BaseShader;
 			monkeyMaterial->Texture = monkeyTex;
 			monkeyMaterial->Shininess = 256.0f;
-
 		}
 
+		//// Table
+		Material::Sptr material_table = ResourceManager::CreateAsset<Material>();
+		{
+			material_table->Name = "Table";
+			material_table->MatShader = scene->BaseShader;
+			material_table->Texture = tex_table;
+			material_table->Shininess = 300.0f;
+		}
+
+		//// Puck
+		Material::Sptr material_puck = ResourceManager::CreateAsset<Material>();
+		{
+			material_puck->Name = "Puck";
+			material_puck->MatShader = scene->BaseShader;
+			material_puck->Texture = tex_puck;
+			material_puck->Shininess = 256.0f;
+		}
+
+		//// ENDREGION
+		#pragma endregion
+
+//// Lights ////
+		#pragma region Lights Creation
 		// Create some lights for our scene
 		scene->Lights.resize(3);
-		scene->Lights[0].Position = glm::vec3(0.0f, 1.0f, 3.0f);
-		scene->Lights[0].Color = glm::vec3(0.5f, 0.0f, 0.7f);
-		scene->Lights[0].Range = 10.0f;
 
-		scene->Lights[1].Position = glm::vec3(1.0f, 0.0f, 3.0f);
-		scene->Lights[1].Color = glm::vec3(0.2f, 0.8f, 0.1f);
-
-		scene->Lights[2].Position = glm::vec3(0.0f, 1.0f, 3.0f);
-		scene->Lights[2].Color = glm::vec3(1.0f, 0.2f, 0.1f);
+		// Main Light
+		scene->Lights[0].Position = glm::vec3(0.0f, 0.0f, 10.0f);
+		scene->Lights[0].Color = glm::vec3(1.0f, 1.0f, 1.0f);
+		scene->Lights[0].Range = 300.0f;
+		#pragma endregion
 
 		// We'll create a mesh that is a simple plane that we can resize later
+		/*
 		MeshResource::Sptr planeMesh = ResourceManager::CreateAsset<MeshResource>();
 		planeMesh->AddParam(MeshBuilderParam::CreatePlane(ZERO, UNIT_Z, UNIT_X, glm::vec2(1.0f)));
 		planeMesh->GenerateMesh();
+		*/
 
-		// Set up the scene's camera
+//// gObj Setup ////
+		#pragma region Scene Object Setup
+		//// Camera
 		GameObject::Sptr camera = scene->CreateGameObject("Main Camera");
 		{
-			camera->SetPostion(glm::vec3(0, 4, 4));
+			camera->SetPostion(glm::vec3(0.0f, 0.0f, 10.0f));
 			camera->LookAt(glm::vec3(0.0f));
+			camera->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 
 			Camera::Sptr cam = camera->Add<Camera>();
 
@@ -317,38 +367,11 @@ int main() {
 			scene->MainCamera = cam;
 		}
 
-		// Set up all our sample objects
-		GameObject::Sptr plane = scene->CreateGameObject("Plane");
-		{
-			// Scale up the plane
-			plane->SetScale(glm::vec3(10.0F));
+		
+		
+		
 
-			// Create and attach a RenderComponent to the object to draw our mesh
-			RenderComponent::Sptr renderer = plane->Add<RenderComponent>();
-			renderer->SetMesh(planeMesh);
-			renderer->SetMaterial(boxMaterial);
-
-			// Attach a plane collider that extends infinitely along the X/Y axis
-			RigidBody::Sptr physics = plane->Add<RigidBody>(/*static by default*/);
-			physics->AddCollider(PlaneCollider::Create());
-		}
-
-		GameObject::Sptr square = scene->CreateGameObject("Square");
-		{
-			// Set position in the scene
-			square->SetPostion(glm::vec3(0.0f, 0.0f, 2.0f));
-			// Scale down the plane
-			square->SetScale(glm::vec3(0.5f));
-
-			// Create and attach a render component
-			RenderComponent::Sptr renderer = square->Add<RenderComponent>();
-			renderer->SetMesh(planeMesh);
-			renderer->SetMaterial(boxMaterial);
-
-			// This object is a renderable only, it doesn't have any behaviours or
-			// physics bodies attached!
-		}
-
+		//// Monkey 1
 		GameObject::Sptr monkey1 = scene->CreateGameObject("Monkey 1");
 		{
 			// Set position in the scene
@@ -373,6 +396,7 @@ int main() {
 			triggerInteraction->ExitMaterial = monkeyMaterial;
 		}
 
+		//// Monkey 2
 		GameObject::Sptr monkey2 = scene->CreateGameObject("Complex Object");
 		{
 			// Set and rotation position in the scene
@@ -389,12 +413,45 @@ int main() {
 			behaviour->RotationSpeed = glm::vec3(0.0f, 0.0f, -90.0f);
 		}
 
+		//// Table
+		GameObject::Sptr gObj_table = scene->CreateGameObject("Base Table");
+		{
+			gObj_table->SetPostion(glm::vec3(0.0f, 0.0f, -8.0f));
+			gObj_table->SetRotation(glm::vec3(90.0f, 0.0f, 90.0f));
+			gObj_table->SetScale(glm::vec3(4.0f, 4.0f, 4.0f));
+
+			RenderComponent::Sptr renderer = gObj_table->Add<RenderComponent>();
+			renderer->SetMesh(mesh_table);
+			renderer->SetMaterial(material_table);
+
+			RigidBody::Sptr physics = gObj_table->Add<RigidBody>(RigidBodyType::Static);
+			physics->AddCollider(ConvexMeshCollider::Create());
+			
+
+		}
+
+		GameObject::Sptr gObj_puck = scene->CreateGameObject("Puck");
+		{
+			gObj_puck->SetPostion(glm::vec3(0.0f, 0.0f, 4.0f));
+
+			RenderComponent::Sptr renderer = gObj_puck->Add<RenderComponent>();
+			renderer->SetMesh(mesh_puck);
+			renderer->SetMaterial(material_puck);
+
+			RigidBody::Sptr physics = gObj_puck->Add<RigidBody>(RigidBodyType::Dynamic);
+			physics->AddCollider(ConvexMeshCollider::Create());
+		}
+
+		
+
+
 		// Kinematic rigid bodies are those controlled by some outside controller
 		// and ONLY collide with dynamic objects
 		RigidBody::Sptr physics = monkey2->Add<RigidBody>(RigidBodyType::Kinematic);
 		physics->AddCollider(ConvexMeshCollider::Create());
 
 		// Create a trigger volume for testing how we can detect collisions with objects!
+		/*
 		GameObject::Sptr trigger = scene->CreateGameObject("Trigger"); 
 		{
 			TriggerVolume::Sptr volume = trigger->Add<TriggerVolume>();
@@ -402,7 +459,10 @@ int main() {
 			collider->SetPosition(glm::vec3(0.0f, 0.0f, 0.5f));
 			volume->AddCollider(collider);
 		}
-
+		*/
+//// ENDREGION
+		#pragma endregion
+		
 		// Save the asset manifest for all the resources we just loaded
 		ResourceManager::SaveManifest("manifest.json");
 		// Save the scene to a JSON file
@@ -431,7 +491,9 @@ int main() {
 
 	nlohmann::json editorSceneState;
 
-	///// Game loop /////
+
+///// Game loop /////
+#pragma region Game Loop
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		ImGuiHelper::StartFrame();
@@ -568,6 +630,12 @@ int main() {
 			renderable->GetMesh()->Draw();
 		});
 
+		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) 
+		{
+			std::cout << "APPLYING FORCE" << std::endl;
+			//scene->FindObjectByName("Puck")->Get<RigidBody>()->ApplyImpulse(glm::vec3(1.0f, 0.0f, 0.0f));
+		}
+
 
 		// End our ImGui window
 		ImGui::End();
@@ -578,6 +646,8 @@ int main() {
 		ImGuiHelper::EndFrame();
 		glfwSwapBuffers(window);
 	}
+//// ENDREGION
+#pragma endregion
 
 	// Clean up the ImGui library
 	ImGuiHelper::Cleanup();
