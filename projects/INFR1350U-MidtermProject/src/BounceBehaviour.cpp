@@ -10,7 +10,7 @@ BounceBehaviour::~BounceBehaviour() = default;
 
 void BounceBehaviour::OnEnteredTrigger(const Gameplay::Physics::TriggerVolume::Sptr& trigger) {
 	if (_renderer) {
-		std::cout << "TRIGGER!!! COUT by BounceBehaviour" << std::endl;
+		std::cout << "OBJNAME: " << _renderer->GetGameObject()->Name << std::endl;
 	}
 }
 
