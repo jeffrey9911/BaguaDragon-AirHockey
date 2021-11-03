@@ -3,6 +3,7 @@
 #include "Gameplay/Physics/TriggerVolume.h"
 #include "Gameplay/Components/RenderComponent.h"
 #include "Gameplay/Physics/TriggerVolume.h"
+//#include "Gameplay/Physics/RigidBody.h"
 
 class BounceBehaviour : public Gameplay::IComponent {
 public:
@@ -10,6 +11,7 @@ public:
 	BounceBehaviour();
 	virtual ~BounceBehaviour();
 
+	Gameplay::Physics::RigidBody::Sptr rigidOBJ;
 	
 
 	virtual void OnEnteredTrigger(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger) override;

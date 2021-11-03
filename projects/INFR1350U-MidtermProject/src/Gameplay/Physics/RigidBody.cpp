@@ -62,6 +62,13 @@ namespace Gameplay::Physics {
 			bodyVeloL.getZ() + bodyVeloA.getZ());
 	}
 
+	void RigidBody::resetVelocity() {
+		btVector3 zeroVelo;
+		zeroVelo.setValue(btScalar(0.0), btScalar(0.0), btScalar(0.0));
+		_body->setAngularVelocity(zeroVelo);
+		_body->setLinearVelocity(zeroVelo);
+	}
+
 	void RigidBody::SetLinearDamping(float value) {
 		_linearDamping = value;
 		_isDampingDirty = true;

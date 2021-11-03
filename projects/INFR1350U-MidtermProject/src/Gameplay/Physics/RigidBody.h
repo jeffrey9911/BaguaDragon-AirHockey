@@ -55,6 +55,8 @@ namespace Gameplay::Physics {
 		/// </summary>
 		glm::vec3 GetVelocity() const;
 
+		void resetVelocity();
+
 		/// <summary>
 		/// Sets the linear damping for this object
 		/// This is how quickly the object will bleed off linear (moving)
