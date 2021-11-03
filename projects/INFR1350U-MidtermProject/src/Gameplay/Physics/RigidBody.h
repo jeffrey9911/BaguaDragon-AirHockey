@@ -46,6 +46,16 @@ namespace Gameplay::Physics {
 		float GetMass() const;
 
 		/// <summary>
+		/// Gets the total force of an object
+		/// </summary>
+		glm::vec3 GetTotalForce() const;
+
+		/// <summary>
+		/// Gets the velocity of the object
+		/// </summary>
+		glm::vec3 GetVelocity() const;
+
+		/// <summary>
 		/// Sets the linear damping for this object
 		/// This is how quickly the object will bleed off linear (moving)
 		/// velocity without any outside forces acting on it. Can be

@@ -47,6 +47,21 @@ namespace Gameplay::Physics {
 		return _type == RigidBodyType::Static ? 0.0f : _mass;
 	}
 
+	glm::vec3 RigidBody::GetTotalForce() const {
+		glm::vec3 retVec3;
+		btVector3 tForce = _body->getTotalForce();
+		retVec3 = glm::vec3(tForce.getX(), tForce.getY(), tForce.getZ());
+		return retVec3;
+	}
+
+	glm::vec3 RigidBody::GetVelocity() const {
+		btVector3 bodyVeloL = _body->getLinearVelocity();
+		btVector3 bodyVeloA = _body->getLinearVelocity();
+		return glm::vec3(bodyVeloL.getX()+bodyVeloA.getX(),
+			bodyVeloL.getY() + bodyVeloA.getY(),
+			bodyVeloL.getZ() + bodyVeloA.getZ());
+	}
+
 	void RigidBody::SetLinearDamping(float value) {
 		_linearDamping = value;
 		_isDampingDirty = true;

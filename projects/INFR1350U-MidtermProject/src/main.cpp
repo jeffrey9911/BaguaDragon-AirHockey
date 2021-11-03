@@ -212,6 +212,8 @@ bool DrawLightImGui(const Scene::Sptr& scene, const char* title, int ix) {
 }
 
 double f0_cursorPosX, f0_cursorPosY;
+Guid myID;
+//std::vector<Guid> edgeID;
 
 int main() {
 //// Initialize ////
@@ -452,7 +454,7 @@ int main() {
 			trigger->AddCollider(collider);*/
 
 			BounceBehaviour::Sptr bounceTrigger = gObj_puck->Add<BounceBehaviour>();
-			
+
 		}
 
 		//// Paddle_red
@@ -472,7 +474,7 @@ int main() {
 
 		//// Edge
 		#pragma region 12 Edges
-		GameObject::Sptr gObj_edge1 = scene->CreateGameObject("Edge");
+		GameObject::Sptr gObj_edge1 = scene->CreateGameObject("Edge1");
 		{
 			gObj_edge1->SetPostion(glm::vec3(-17.270f, 5.540f, -8.02f));
 			gObj_edge1->SetRotation(glm::vec3(0.0f, 0.0f, 86.5f));
@@ -484,10 +486,11 @@ int main() {
 			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(2.980f, 1.0f, 1.0f));
 			TriggerVolume::Sptr volume = gObj_edge1->Add<TriggerVolume>();
-			volume->AddCollider(collider);
+			volume->AddCollider(ConvexMeshCollider::Create());
+			
 
 		}
-		GameObject::Sptr gObj_edge2 = scene->CreateGameObject("Edge");
+		GameObject::Sptr gObj_edge2 = scene->CreateGameObject("Edge2");
 		{
 			gObj_edge2->SetPostion(glm::vec3(-17.270f, -5.540f, -8.02f));
 			gObj_edge2->SetRotation(glm::vec3(0.0f, 0.0f, 93.5f));
@@ -498,8 +501,10 @@ int main() {
 			RigidBody::Sptr physics = gObj_edge2->Add<RigidBody>(RigidBodyType::Static);
 			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(2.980f, 1.0f, 1.0f));
+			TriggerVolume::Sptr volume = gObj_edge2->Add<TriggerVolume>();
+			volume->AddCollider(collider);
 		}
-		GameObject::Sptr gObj_edge3 = scene->CreateGameObject("Edge");
+		GameObject::Sptr gObj_edge3 = scene->CreateGameObject("Edge3");
 		{
 			gObj_edge3->SetPostion(glm::vec3(-12.790f, 11.3f, -8.02f));
 			gObj_edge3->SetRotation(glm::vec3(0.0f, 0.0f, 32.9f));
@@ -510,8 +515,10 @@ int main() {
 			RigidBody::Sptr physics = gObj_edge3->Add<RigidBody>(RigidBodyType::Static);
 			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
+			TriggerVolume::Sptr volume = gObj_edge3->Add<TriggerVolume>();
+			volume->AddCollider(collider);
 		}
-		GameObject::Sptr gObj_edge4 = scene->CreateGameObject("Edge");
+		GameObject::Sptr gObj_edge4 = scene->CreateGameObject("Edge4");
 		{
 			gObj_edge4->SetPostion(glm::vec3(-12.790f, -11.3f, -8.02f));
 			gObj_edge4->SetRotation(glm::vec3(0.0f, 0.0f, 147.1f));
@@ -522,8 +529,10 @@ int main() {
 			RigidBody::Sptr physics = gObj_edge4->Add<RigidBody>(RigidBodyType::Static);
 			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
+			TriggerVolume::Sptr volume = gObj_edge4->Add<TriggerVolume>();
+			volume->AddCollider(collider);
 		}
-		GameObject::Sptr gObj_edge5 = scene->CreateGameObject("Edge");
+		GameObject::Sptr gObj_edge5 = scene->CreateGameObject("Edge5");
 		{
 			gObj_edge5->SetPostion(glm::vec3(-4.210f, 12.810f, -8.02f));
 			gObj_edge5->SetRotation(glm::vec3(0.0f, 0.0f, 163.7f));
@@ -534,8 +543,10 @@ int main() {
 			RigidBody::Sptr physics = gObj_edge5->Add<RigidBody>(RigidBodyType::Static);
 			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
+			TriggerVolume::Sptr volume = gObj_edge5->Add<TriggerVolume>();
+			volume->AddCollider(collider);
 		}
-		GameObject::Sptr gObj_edge6 = scene->CreateGameObject("Edge");
+		GameObject::Sptr gObj_edge6 = scene->CreateGameObject("Edge6");
 		{
 			gObj_edge6->SetPostion(glm::vec3(-4.210f, -12.810f, -8.02f));
 			gObj_edge6->SetRotation(glm::vec3(0.0f, 0.0f, 16.3f));
@@ -546,8 +557,10 @@ int main() {
 			RigidBody::Sptr physics = gObj_edge6->Add<RigidBody>(RigidBodyType::Static);
 			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
+			TriggerVolume::Sptr volume = gObj_edge6->Add<TriggerVolume>();
+			volume->AddCollider(collider);
 		}
-		GameObject::Sptr gObj_edge7 = scene->CreateGameObject("Edge");
+		GameObject::Sptr gObj_edge7 = scene->CreateGameObject("Edge7");
 		{
 			gObj_edge7->SetPostion(glm::vec3(4.210f, 12.810f, -8.02f));
 			gObj_edge7->SetRotation(glm::vec3(0.0f, 0.0f, 16.3f));
@@ -558,8 +571,9 @@ int main() {
 			RigidBody::Sptr physics = gObj_edge7->Add<RigidBody>(RigidBodyType::Static);
 			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
+			
 		}
-		GameObject::Sptr gObj_edge8 = scene->CreateGameObject("Edge");
+		GameObject::Sptr gObj_edge8 = scene->CreateGameObject("Edge8");
 		{
 			gObj_edge8->SetPostion(glm::vec3(4.210f, -12.810f, -8.02f));
 			gObj_edge8->SetRotation(glm::vec3(0.0f, 0.0f, 163.7f));
@@ -570,8 +584,9 @@ int main() {
 			RigidBody::Sptr physics = gObj_edge8->Add<RigidBody>(RigidBodyType::Static);
 			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
+			
 		}
-		GameObject::Sptr gObj_edge9 = scene->CreateGameObject("Edge");
+		GameObject::Sptr gObj_edge9 = scene->CreateGameObject("Edge9");
 		{
 			gObj_edge9->SetPostion(glm::vec3(12.790f, 11.3f, -8.02f));
 			gObj_edge9->SetRotation(glm::vec3(0.0f, 0.0f, 147.1f));
@@ -582,8 +597,9 @@ int main() {
 			RigidBody::Sptr physics = gObj_edge9->Add<RigidBody>(RigidBodyType::Static);
 			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
+			
 		}
-		GameObject::Sptr gObj_edge10 = scene->CreateGameObject("Edge");
+		GameObject::Sptr gObj_edge10 = scene->CreateGameObject("Edge10");
 		{
 			gObj_edge10->SetPostion(glm::vec3(12.790f, -11.3f, -8.02f));
 			gObj_edge10->SetRotation(glm::vec3(0.0f, 0.0f, 32.9f));
@@ -594,8 +610,9 @@ int main() {
 			RigidBody::Sptr physics = gObj_edge10->Add<RigidBody>(RigidBodyType::Static);
 			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
+			
 		}
-		GameObject::Sptr gObj_edge11 = scene->CreateGameObject("Edge");
+		GameObject::Sptr gObj_edge11 = scene->CreateGameObject("Edge11");
 		{
 			gObj_edge11->SetPostion(glm::vec3(17.270f, 5.540f, -8.02f));
 			gObj_edge11->SetRotation(glm::vec3(0.0f, 0.0f, 93.5f));
@@ -606,8 +623,9 @@ int main() {
 			RigidBody::Sptr physics = gObj_edge11->Add<RigidBody>(RigidBodyType::Static);
 			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(2.980f, 1.0f, 1.0f));
+			
 		}
-		GameObject::Sptr gObj_edge12 = scene->CreateGameObject("Edge");
+		GameObject::Sptr gObj_edge12 = scene->CreateGameObject("Edge12");
 		{
 			gObj_edge12->SetPostion(glm::vec3(17.270f, -5.540f, -8.02f));
 			gObj_edge12->SetRotation(glm::vec3(0.0f, 0.0f, 86.5f));
@@ -618,7 +636,11 @@ int main() {
 			RigidBody::Sptr physics = gObj_edge12->Add<RigidBody>(RigidBodyType::Static);
 			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(2.980f, 1.0f, 1.0f));
+			
 		}
+
+		
+
 		#pragma endregion
 
 		
@@ -819,6 +841,24 @@ int main() {
 			rigid_puck->ApplyForce(glm::vec3(-10.0f, 0.0f, 0.0f));
 		}
 
+		//glm::vec3 velo = rigid_puck->GetVelocity();
+
+		//std::cout << velo.x << " " << velo.y << " " << velo.z << std::endl;
+		//std::cout << rigid_puck->GetAngularDamping() << std::endl;
+
+		/*
+		GameObject::Sptr edge = scene->FindObjectByGUID(edgeID[0]);
+		glm::vec3 edgePos = edge->GetPosition();
+		//edgePos = glm::normalize(edgePos);
+		//velo = glm::normalize(velo);
+
+		glm::vec3 dV = glm::normalize(velo - glm::vec3(0.0f, 0.0f, 0.0f));
+		glm::vec3 dE = glm::normalize(edgePos - glm::vec3(0.0f, 0.0f, 0.0f));
+		float rotAng = glm::acos(glm::dot(dV, dE));
+
+		std::cout << rotAng << std::endl;
+		*/
+
 		/*
 		int windowX;
 		int windowY;
@@ -873,8 +913,7 @@ int main() {
 		glfwGetCursorPos(window, &f0_cursorPosX, &f0_cursorPosY);
 
 		
-
-
+		
 		
 		//scene->FindObjectByName("Paddle_red")->SetPostion(glm::vec3(-tempX * 0.2, tempY * 0.2, 0.0f));
 
