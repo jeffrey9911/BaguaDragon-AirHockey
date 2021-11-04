@@ -215,6 +215,15 @@ double f0_cursorPosX, f0_cursorPosY;
 Guid myID;
 std::vector<Guid> edgeID;
 
+void scoreCheck(bool isLeft);
+// Global scoring
+int leftScore[4] = {0, 0, 0, 0};
+int leftScoreInd[4] = {0, 2, 4, 6};
+int rightScore[4] = {0, 0, 0, 0};
+int rightScoreInd[4] = { 1, 3, 5, 7 };
+glm::vec3 black = glm::vec3(0.0f);
+glm::vec3 yellow = glm::vec3(1.0f, 1.0f, 0.0f);
+
 int main() {
 //// Initialize ////
 	#pragma region GeneralInitialize
@@ -264,6 +273,9 @@ int main() {
 
 	bool loadScene = false;
 	// For now we can use a toggle to generate our scene vs load from file
+
+	std::vector<Light> scoreLight;
+	Light puckLight;
 	if (loadScene) {
 		ResourceManager::LoadManifest("manifest.json");
 		scene = Scene::Load("scene.json");
@@ -287,7 +299,7 @@ int main() {
 		//// Table
 		MeshResource::Sptr mesh_table = ResourceManager::CreateAsset<MeshResource>("gObj_table/table.obj");
 		MeshResource::Sptr mesh_table_plane = ResourceManager::CreateAsset<MeshResource>("gObj_table/table_plane.obj");
-		//Texture2D::Sptr tex_table = ResourceManager::CreateAsset<Texture2D>("gObj_table/tex_table.png");
+		Texture2D::Sptr tex_table = ResourceManager::CreateAsset<Texture2D>("gObj_table/tex_table.png");
 		Texture2D::Sptr tex_white = ResourceManager::CreateAsset<Texture2D>("gObj_table/blankTexture.jpg");
 
 		//// Puck
@@ -296,7 +308,9 @@ int main() {
 
 		//// Paddle
 		MeshResource::Sptr mesh_paddle = ResourceManager::CreateAsset<MeshResource>("gObj_paddle/paddle.obj");
+		MeshResource::Sptr mesh_paddle2 = ResourceManager::CreateAsset<MeshResource>("gObj_paddle/paddle.obj");
 		Texture2D::Sptr tex_paddle_red = ResourceManager::CreateAsset<Texture2D>("gObj_paddle/Red.jpg");
+		Texture2D::Sptr tex_paddle_blue = ResourceManager::CreateAsset<Texture2D>("gObj_paddle/Blue.jpg");
 
 		//// Edge
 		MeshResource::Sptr mesh_edge1 = ResourceManager::CreateAsset<MeshResource>("gObj_edge/edge_uni.obj");
@@ -311,8 +325,16 @@ int main() {
 		MeshResource::Sptr mesh_edge10 = ResourceManager::CreateAsset<MeshResource>("gObj_edge/edge_uni.obj");
 		MeshResource::Sptr mesh_edge11 = ResourceManager::CreateAsset<MeshResource>("gObj_edge/edge_uni.obj");
 		MeshResource::Sptr mesh_edge12 = ResourceManager::CreateAsset<MeshResource>("gObj_edge/edge_uni.obj");
-		
 
+		MeshResource::Sptr mesh_edgeS1 = ResourceManager::CreateAsset<MeshResource>("gObj_edge/edgeS1.obj");
+		MeshResource::Sptr mesh_edgeS2 = ResourceManager::CreateAsset<MeshResource>("gObj_edge/edgeS2.obj");
+		MeshResource::Sptr mesh_edgeS3 = ResourceManager::CreateAsset<MeshResource>("gObj_edge/edgeS3.obj");
+		MeshResource::Sptr mesh_edgeS4 = ResourceManager::CreateAsset<MeshResource>("gObj_edge/edgeS4.obj");
+		Texture2D::Sptr tex_edgeSkin = ResourceManager::CreateAsset<Texture2D>("gObj_edge/tex_edge.png");
+
+		MeshResource::Sptr mesh_edgeMask = ResourceManager::CreateAsset<MeshResource>("gObj_edge/bagua.obj");
+		
+		  
 
 		//// ENDREGION
 		#pragma endregion	
@@ -347,7 +369,7 @@ int main() {
 		{
 			material_table->Name = "Table";
 			material_table->MatShader = scene->BaseShader;
-			material_table->Texture = tex_white;
+			material_table->Texture = tex_table;
 			material_table->Shininess = 300.0f;
 		}
 
@@ -369,12 +391,20 @@ int main() {
 			material_paddle->Shininess = 256.0f;
 		}
 
+		Material::Sptr material_paddle2 = ResourceManager::CreateAsset<Material>();
+		{
+			material_paddle2->Name = "Paddle2";
+			material_paddle2->MatShader = scene->BaseShader;
+			material_paddle2->Texture = tex_paddle_blue;
+			material_paddle2->Shininess = 256.0f;
+		}
+
 		//// Edge
 		Material::Sptr material_edge = ResourceManager::CreateAsset<Material>();
 		{
 			material_edge->Name = "Edge";
 			material_edge->MatShader = scene->BaseShader;
-			material_edge->Texture = tex_white;
+			material_edge->Texture = tex_edgeSkin;
 			material_edge->Shininess = 256.0f;
 		}
 
@@ -384,12 +414,49 @@ int main() {
 //// Lights ////
 		#pragma region Lights Creation
 		// Create some lights for our scene
-		scene->Lights.resize(3);
+		scene->Lights.resize(9);
 
 		// Main Light
 		scene->Lights[0].Position = glm::vec3(0.0f, 0.0f, 10.0f);
 		scene->Lights[0].Color = glm::vec3(1.0f, 1.0f, 1.0f);
-		scene->Lights[0].Range = 300.0f;
+		scene->Lights[0].Range = 5000.0f;
+
+		// Light 9 follows puck
+
+		// l1
+		scene->Lights[1].Range = 60.0f;
+		scene->Lights[2].Range = 60.0f;
+		scene->Lights[3].Range = 60.0f;
+		scene->Lights[4].Range = 60.0f;
+		scene->Lights[5].Range = 60.0f;
+		scene->Lights[6].Range = 60.0f;
+		scene->Lights[7].Range = 60.0f;
+		scene->Lights[8].Range = 60.0f;
+
+		scene->Lights[1].Color = yellow;
+		scene->Lights[2].Color = yellow;
+		scene->Lights[3].Color = yellow;
+		scene->Lights[4].Color = yellow;
+		scene->Lights[5].Color = yellow;
+		scene->Lights[6].Color = yellow;
+		scene->Lights[7].Color = yellow;
+		scene->Lights[8].Color = yellow;
+
+		scene->Lights[1].Position = glm::vec3(-14.840f, 13.340f, -6.560f);
+		scene->Lights[3].Position = glm::vec3(-14.720f, -12.980f, -6.620f);
+		scene->Lights[5].Position = glm::vec3(-4.460f, 15.460f, -6.590f);
+		scene->Lights[7].Position = glm::vec3(-4.450f, -15.180f, -6.600f);
+
+		scene->Lights[2].Position = glm::vec3(15.330f, 13.320f, -6.600f);
+		scene->Lights[4].Position = glm::vec3(15.040f, -13.320f, -6.570f);
+		scene->Lights[6].Position = glm::vec3(4.350f, 15.380f, -6.570f);
+		scene->Lights[8].Position = glm::vec3(4.540f, -15.540f, -6.570f);
+
+		for (int i = 1; i < 8; i++)
+		{
+			scoreLight.push_back(scene->Lights[i]);
+		}
+		
 		#pragma endregion
 
 //// gObj Setup ////
@@ -397,16 +464,16 @@ int main() {
 		//// Camera
 		GameObject::Sptr camera = scene->CreateGameObject("Main Camera");
 		{
-			camera->SetPostion(glm::vec3(0.0f, 0.0f, 10.0f));
+			camera->SetPostion(glm::vec3(0.0f, -3.0f, 13.0f));
 			camera->LookAt(glm::vec3(0.0f));
-			camera->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+			camera->SetRotation(glm::vec3(8.0f, 0.0f, 0.0f));
 
 			Camera::Sptr cam = camera->Add<Camera>();
 
 			// Make sure that the camera is set as the scene's main camera!
 			scene->MainCamera = cam;
 		}
-		 
+		   
 		//// Table
 		GameObject::Sptr gObj_table = scene->CreateGameObject("Base Table");
 		{
@@ -472,13 +539,27 @@ int main() {
 			physics->AddCollider(ConvexMeshCollider::Create());
 		}
 
+		//// Paddle_blue
+		GameObject::Sptr gObj_paddle_blue = scene->CreateGameObject("Paddle_blue");
+		{
+			gObj_paddle_blue->SetPostion(glm::vec3(5.0f, 0.0f, -8.01f));
+			gObj_paddle_blue->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
+
+
+			RenderComponent::Sptr renderer = gObj_paddle_blue->Add<RenderComponent>();
+			renderer->SetMesh(mesh_paddle2);
+			renderer->SetMaterial(material_paddle2);
+
+			RigidBody::Sptr physics = gObj_paddle_blue->Add<RigidBody>(RigidBodyType::Kinematic);
+			physics->AddCollider(ConvexMeshCollider::Create());
+		}
 		//// Edge
 		#pragma region 12 Edges
 		GameObject::Sptr gObj_edge1 = scene->CreateGameObject("Edge1");
 		{
 			edgeID.push_back(gObj_edge1->GUID);
 			gObj_edge1->SetPostion(glm::vec3(-17.270f, 5.540f, -8.02f));
-			gObj_edge1->SetRotation(glm::vec3(0.0f, 0.0f, 86.5f));
+			gObj_edge1->SetRotation(glm::vec3(0.0f, 0.0f, -93.5f));
 			gObj_edge1->SetScale(glm::vec3(2.980f, 1.0f, 1.0f));
 			RenderComponent::Sptr renderer = gObj_edge1->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge1);
@@ -495,7 +576,7 @@ int main() {
 		{
 			edgeID.push_back(gObj_edge2->GUID);
 			gObj_edge2->SetPostion(glm::vec3(-17.270f, -5.540f, -8.02f));
-			gObj_edge2->SetRotation(glm::vec3(0.0f, 0.0f, 93.5f));
+			gObj_edge2->SetRotation(glm::vec3(0.0f, 0.0f, -86.5f));
 			gObj_edge2->SetScale(glm::vec3(2.980f, 1.0f, 1.0f));
 			RenderComponent::Sptr renderer = gObj_edge2->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge2);
@@ -510,7 +591,7 @@ int main() {
 		{
 			edgeID.push_back(gObj_edge3->GUID);
 			gObj_edge3->SetPostion(glm::vec3(-12.790f, 11.3f, -8.02f));
-			gObj_edge3->SetRotation(glm::vec3(0.0f, 0.0f, 32.9f));
+			gObj_edge3->SetRotation(glm::vec3(0.0f, 0.0f, -147.1));
 			gObj_edge3->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
 			RenderComponent::Sptr renderer = gObj_edge3->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge3);
@@ -525,7 +606,7 @@ int main() {
 		{
 			edgeID.push_back(gObj_edge4->GUID);
 			gObj_edge4->SetPostion(glm::vec3(-12.790f, -11.3f, -8.02f));
-			gObj_edge4->SetRotation(glm::vec3(0.0f, 0.0f, 147.1f));
+			gObj_edge4->SetRotation(glm::vec3(0.0f, 0.0f, -32.9f));
 			gObj_edge4->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
 			RenderComponent::Sptr renderer = gObj_edge4->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge4);
@@ -570,7 +651,7 @@ int main() {
 		{
 			edgeID.push_back(gObj_edge7->GUID);
 			gObj_edge7->SetPostion(glm::vec3(4.210f, 12.810f, -8.02f));
-			gObj_edge7->SetRotation(glm::vec3(0.0f, 0.0f, 16.3f));
+			gObj_edge7->SetRotation(glm::vec3(0.0f, 0.0f, -163.7f));
 			gObj_edge7->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
 			RenderComponent::Sptr renderer = gObj_edge7->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge7);
@@ -585,7 +666,7 @@ int main() {
 		{
 			edgeID.push_back(gObj_edge8->GUID);
 			gObj_edge8->SetPostion(glm::vec3(4.210f, -12.810f, -8.02f));
-			gObj_edge8->SetRotation(glm::vec3(0.0f, 0.0f, 163.7f));
+			gObj_edge8->SetRotation(glm::vec3(0.0f, 0.0f, -16.3f));
 			gObj_edge8->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
 			RenderComponent::Sptr renderer = gObj_edge8->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge8);
@@ -661,7 +742,62 @@ int main() {
 
 		#pragma endregion
 
+		 
+
+		//// Edge Skin
+		GameObject::Sptr gObj_edgeS1 = scene->CreateGameObject("Edge_skin1");
+		{
+			gObj_edgeS1->SetPostion(glm::vec3(0.0f, 0.0f, -8.0f));
+
+			RenderComponent::Sptr renderer = gObj_edgeS1->Add<RenderComponent>();
+			renderer->SetMesh(mesh_edgeS1);
+			renderer->SetMaterial(material_edge);
+
+			RigidBody::Sptr physics = gObj_edgeS1->Add<RigidBody>(RigidBodyType::Static);
+		}
+		GameObject::Sptr gObj_edgeS2 = scene->CreateGameObject("Edge_skin2");
+		{
+			gObj_edgeS2->SetPostion(glm::vec3(0.0f, 0.0f, -8.0f));
+
+			RenderComponent::Sptr renderer = gObj_edgeS2->Add<RenderComponent>();
+			renderer->SetMesh(mesh_edgeS2);
+			renderer->SetMaterial(material_edge);
+
+			RigidBody::Sptr physics = gObj_edgeS2->Add<RigidBody>(RigidBodyType::Static);
+		}
+		GameObject::Sptr gObj_edgeS3 = scene->CreateGameObject("Edge_skin3");
+		{
+			gObj_edgeS3->SetPostion(glm::vec3(0.0f, 0.0f, -8.0f));
+
+			RenderComponent::Sptr renderer = gObj_edgeS3->Add<RenderComponent>();
+			renderer->SetMesh(mesh_edgeS3);
+			renderer->SetMaterial(material_edge);
+
+			RigidBody::Sptr physics = gObj_edgeS3->Add<RigidBody>(RigidBodyType::Static);
+		}
+		GameObject::Sptr gObj_edgeS4 = scene->CreateGameObject("Edge_skin4");
+		{
+			gObj_edgeS4->SetPostion(glm::vec3(0.0f, 0.0f, -8.0f));
+
+			RenderComponent::Sptr renderer = gObj_edgeS4->Add<RenderComponent>();
+			renderer->SetMesh(mesh_edgeS4);
+			renderer->SetMaterial(material_edge);
+
+			RigidBody::Sptr physics = gObj_edgeS4->Add<RigidBody>(RigidBodyType::Static);
+		}
 		
+		
+		 
+		//// Edge Mask
+		GameObject::Sptr gObj_edgeMask = scene->CreateGameObject("Edge_mask");
+		{
+			gObj_edgeMask->SetPostion(glm::vec3(0.0f, 0.0f, -8.0f));
+
+			RenderComponent::Sptr renderer = gObj_edgeMask->Add<RenderComponent>();
+			renderer->SetMesh(mesh_edgeMask);
+			renderer->SetMaterial(material_edge);
+		}
+
 		//// Plane 
 
 //// ENDREGION
@@ -696,6 +832,7 @@ int main() {
 	nlohmann::json editorSceneState;
 
 	bool isFirstClick = true;
+	
 
 ///// Game loop /////
 #pragma region Game Loop
@@ -835,7 +972,13 @@ int main() {
 			renderable->GetMesh()->Draw();
 		});
 
-		RigidBody::Sptr rigid_puck = scene->FindObjectByName("Puck")->Get<RigidBody>();
+
+		/// <summary>
+		/// puck interaction
+		/// </summary>
+		/// <returns></returns>
+		GameObject::Sptr gObj_puck = scene->FindObjectByName("Puck");
+		RigidBody::Sptr rigid_puck = gObj_puck->Get<RigidBody>();
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) 
 		{
 			//std::cout << "APPLYING FORCE" << std::endl;
@@ -859,32 +1002,10 @@ int main() {
 			rigid_puck->ApplyForce(glm::vec3(-10.0f, 0.0f, 0.0f));
 		}
 
-		BounceBehaviour::Sptr bounce_puck = scene->FindObjectByName("Puck")->Get<BounceBehaviour>();
-		bounce_puck->rigidOBJ = rigid_puck;
-
-		
-
-		
-
-		/*
-		int windowX;
-		int windowY;
-		glfwGetWindowSize(window, &windowX, &windowY);
-		double doub_winX = (double)windowX / 2;
-		double doub_winY = (double)windowY / 2;
-
-		
-		
-
-		glm::vec2 CursorPos = glm::vec2(cursorX / doub_winX, cursorY / doub_winY);
-		GameObject::Sptr getPaddle = scene->FindObjectByName("Paddle_red");
-		glm::vec3 glCursorPos = glm::vec3(-(1.0f - CursorPos.x), 1.0f - CursorPos.y, 0.0f);
-
-		//glCursorPos = glCursorPos * viewProj;
-		
-		//std::cout << glCursorPos.x << " " << glCursorPos.y << " " << glCursorPos.z << " " << glCursorPos.w << std::endl;
-		*/
-
+		/// <summary>
+		/// Red Paddle Control
+		/// </summary>
+		/// <returns></returns>
 		GameObject::Sptr paddle_R = scene->FindObjectByName("Paddle_red");
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS)
 		{
@@ -906,9 +1027,7 @@ int main() {
 				f0_cursorPosX = f0_cursorPosX / doub_winX;
 				f0_cursorPosY = f0_cursorPosY / doub_winY;
 
-
 				glm::vec3 dCursorPos = glm::vec3(((float)(cursorX - f0_cursorPosX)), -((float)(cursorY - f0_cursorPosY)), 0.0f);
-				//std::cout << dCursorPos.x << " " << dCursorPos.y << " " << dCursorPos.z << std::endl;
 				paddle_R->SetPostion((paddle_R->GetPosition() + dCursorPos * 20.0f));
 			}
 			else 
@@ -919,12 +1038,67 @@ int main() {
 		}
 		glfwGetCursorPos(window, &f0_cursorPosX, &f0_cursorPosY);
 
-		
-		
-		
-		//scene->FindObjectByName("Paddle_red")->SetPostion(glm::vec3(-tempX * 0.2, tempY * 0.2, 0.0f));
+		/// <summary>
+		/// Paddle B control
+		/// </summary>
+		/// <returns></returns>
+		GameObject::Sptr paddle_B = scene->FindObjectByName("Paddle_blue");
+		glm::vec3 pbPos = paddle_B->GetPosition();
+		float keyMoveSpeed = 0.1f;
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		{
+			paddle_B->SetPostion(glm::vec3(pbPos.x, pbPos.y + keyMoveSpeed, pbPos.z));
+		}
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		{
+			paddle_B->SetPostion(glm::vec3(pbPos.x - keyMoveSpeed, pbPos.y, pbPos.z));
+		}
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		{
+			paddle_B->SetPostion(glm::vec3(pbPos.x , pbPos.y- keyMoveSpeed, pbPos.z));
+		}
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		{
+			paddle_B->SetPostion(glm::vec3(pbPos.x + keyMoveSpeed, pbPos.y, pbPos.z));
+		}
 
+		// Apply colliding
+		BounceBehaviour::Sptr bounce_puck = scene->FindObjectByName("Puck")->Get<BounceBehaviour>();
+		bounce_puck->rigidOBJ = rigid_puck;
 
+		glm::vec3 puckPos = gObj_puck->GetPosition();
+		if (puckPos.x <= -17.6f) // RIGHT WINS 
+		{
+			scoreCheck(false);
+			gObj_puck->SetPostion(glm::vec3(9.5f, 0.0f, -1.0f));
+			rigid_puck->resetVelocity();
+		}
+		if (puckPos.x >= 17.6f) // LEFT WINS
+		{
+			scoreCheck(true);
+			gObj_puck->SetPostion(glm::vec3(-9.5f, 0.0f, -1.0f));
+			rigid_puck->resetVelocity();
+		}
+
+		
+		for (int ix = 1; ix < scene->Lights.size(); ix++)
+		{
+			scene->Lights.erase(scene->Lights.begin() + ix);
+			scene->SetupShaderAndLights();
+		}
+		for (int i = 0; i < 4; i ++)
+		{
+			if (leftScore[i] == 1)
+			{
+				scene->Lights.push_back(scoreLight[leftScoreInd[i]]);
+			}
+			if (rightScore[i] == 1)
+			{
+				scene->Lights.push_back(scoreLight[rightScoreInd[i]]);
+			}
+		}
+		scene->SetupShaderAndLights();
+		
 		// End our ImGui window
 		ImGui::End();
 
@@ -946,4 +1120,28 @@ int main() {
 	// Clean up the toolkit logger so we don't leak memory
 	Logger::Uninitialize();
 	return 0;
+}
+
+void scoreCheck(bool isLeft) {
+	for (int i = 0; i < 4; i ++)
+	{
+		if (isLeft)
+		{
+			if (leftScore[i] == 0)
+			{
+				std::cout << "LEFT GOAL!" << std::endl;
+				leftScore[i] = 1;
+				break;
+			}
+		}
+		if (!isLeft)
+		{
+			if (rightScore[i] == 0)
+			{
+				std::cout << "RIGHT GOAL!" << std::endl;
+				rightScore[i] = 1;
+				break;
+			}
+		}
+	}
 }
