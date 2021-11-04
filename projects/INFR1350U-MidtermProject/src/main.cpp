@@ -216,13 +216,20 @@ Guid myID;
 std::vector<Guid> edgeID;
 
 void scoreCheck(bool isLeft);
+void scoreCheckReset();
+void checkIsReseting();
 // Global scoring
 int leftScore[4] = {0, 0, 0, 0};
-int leftScoreInd[4] = {0, 2, 4, 6};
+int leftScoreInd[4] = {0, 1, 2, 3};
 int rightScore[4] = {0, 0, 0, 0};
-int rightScoreInd[4] = { 1, 3, 5, 7 };
+int rightScoreInd[4] = { 4, 5, 6, 7 };
 glm::vec3 black = glm::vec3(0.0f);
 glm::vec3 yellow = glm::vec3(1.0f, 1.0f, 0.0f);
+
+int lScore = -1;
+int rScore = -1;
+
+bool isWin = false;
 
 int main() {
 //// Initialize ////
@@ -443,16 +450,16 @@ int main() {
 		scene->Lights[8].Color = yellow;
 
 		scene->Lights[1].Position = glm::vec3(-14.840f, 13.340f, -6.560f);
-		scene->Lights[3].Position = glm::vec3(-14.720f, -12.980f, -6.620f);
-		scene->Lights[5].Position = glm::vec3(-4.460f, 15.460f, -6.590f);
-		scene->Lights[7].Position = glm::vec3(-4.450f, -15.180f, -6.600f);
+		scene->Lights[2].Position = glm::vec3(-14.720f, -12.980f, -6.620f);
+		scene->Lights[3].Position = glm::vec3(-4.460f, 15.460f, -6.590f);
+		scene->Lights[4].Position = glm::vec3(-4.450f, -15.180f, -6.600f);
 
-		scene->Lights[2].Position = glm::vec3(15.330f, 13.320f, -6.600f);
-		scene->Lights[4].Position = glm::vec3(15.040f, -13.320f, -6.570f);
-		scene->Lights[6].Position = glm::vec3(4.350f, 15.380f, -6.570f);
+		scene->Lights[5].Position = glm::vec3(15.330f, 13.320f, -6.600f);
+		scene->Lights[6].Position = glm::vec3(15.040f, -13.320f, -6.570f);
+		scene->Lights[7].Position = glm::vec3(4.350f, 15.380f, -6.570f);
 		scene->Lights[8].Position = glm::vec3(4.540f, -15.540f, -6.570f);
 
-		for (int i = 1; i < 8; i++)
+		for (int i = 1; i < 9; i++)
 		{
 			scoreLight.push_back(scene->Lights[i]);
 		}
@@ -510,15 +517,6 @@ int main() {
 
 			RigidBody::Sptr physics = gObj_puck->Add<RigidBody>(RigidBodyType::Dynamic);
 			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
-
-			/*
-			MaterialSwapBehaviour::Sptr triggerInteraction = gObj_puck->Add<MaterialSwapBehaviour>();
-			triggerInteraction->EnterMaterial = boxMaterial;
-			triggerInteraction->ExitMaterial = monkeyMaterial;
-			*/
-			/*
-			TriggerVolume::Sptr trigger = gObj_puck->Add<TriggerVolume>();
-			trigger->AddCollider(collider);*/
 
 			BounceBehaviour::Sptr bounceTrigger = gObj_puck->Add<BounceBehaviour>();
 			bounceTrigger->rigidOBJ = physics;
@@ -833,13 +831,14 @@ int main() {
 
 	bool isFirstClick = true;
 	
+	
 
 ///// Game loop /////
 #pragma region Game Loop
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		ImGuiHelper::StartFrame();
-
+		
 		// Calculate the time since our last frame (dt)
 		double thisFrame = glfwGetTime();
 		float dt = static_cast<float>(thisFrame - lastFrame);
@@ -941,7 +940,7 @@ int main() {
 		if (isDebugWindowOpen) {
 			scene->DrawAllGameObjectGUIs();
 		}
-		
+
 		// The current material that is bound for rendering
 		Material::Sptr currentMat = nullptr;
 		Shader::Sptr shader = nullptr;
@@ -959,6 +958,7 @@ int main() {
 				shader->SetUniform("u_CamPos", scene->MainCamera->GetGameObject()->GetPosition());
 				currentMat->Apply();
 			}
+			
 
 			// Grab the game object so we can do some stuff with it
 			GameObject* object = renderable->GetGameObject();
@@ -967,11 +967,10 @@ int main() {
 			shader->SetUniformMatrix("u_ModelViewProjection", viewProj * object->GetTransform());
 			shader->SetUniformMatrix("u_Model", object->GetTransform());
 			shader->SetUniformMatrix("u_NormalMatrix", glm::mat3(glm::transpose(glm::inverse(object->GetTransform()))));
-
 			// Draw the object
 			renderable->GetMesh()->Draw();
 		});
-
+		
 
 		/// <summary>
 		/// puck interaction
@@ -1079,35 +1078,56 @@ int main() {
 			gObj_puck->SetPostion(glm::vec3(-9.5f, 0.0f, -1.0f));
 			rigid_puck->resetVelocity();
 		}
+		
+		
+		//std::cout << " " << scene->Lights.begin()[0] << std::endl;
 
 		
 		for (int ix = 1; ix < scene->Lights.size(); ix++)
 		{
 			scene->Lights.erase(scene->Lights.begin() + ix);
-			scene->SetupShaderAndLights();
-		}
-		for (int i = 0; i < 4; i ++)
-		{
-			if (leftScore[i] == 1)
-			{
-				scene->Lights.push_back(scoreLight[leftScoreInd[i]]);
-			}
-			if (rightScore[i] == 1)
-			{
-				scene->Lights.push_back(scoreLight[rightScoreInd[i]]);
-			}
+			
 		}
 		scene->SetupShaderAndLights();
 		
+		
+		if (lScore > -1)
+		{
+			
+			for (int i = -1; i < lScore; i++)
+			{
+				scene->Lights.push_back(scoreLight[i + 1]);
+				scene->SetupShaderAndLights();
+			}
+		}
+		if (rScore > -1)
+		{
+			for (int i = -1; i < rScore; i++)
+			{
+				scene->Lights.push_back(scoreLight[i + 5]);
+				scene->SetupShaderAndLights();
+			}
+		}
+		
+		
+		// modify position of these two....
+		checkIsReseting();
+		scoreCheckReset();
+		// Don't change the order of these two function
+
 		// End our ImGui window
 		ImGui::End();
-
+		
 		VertexArrayObject::Unbind();
 
 		lastFrame = thisFrame;
 		ImGuiHelper::EndFrame();
+
 		glfwSwapBuffers(window);
+		
 	}
+
+	
 //// ENDREGION
 #pragma endregion
 
@@ -1123,25 +1143,35 @@ int main() {
 }
 
 void scoreCheck(bool isLeft) {
-	for (int i = 0; i < 4; i ++)
+	if (isLeft) {
+		lScore += 1;
+	}
+	else 
 	{
-		if (isLeft)
-		{
-			if (leftScore[i] == 0)
-			{
-				std::cout << "LEFT GOAL!" << std::endl;
-				leftScore[i] = 1;
-				break;
-			}
-		}
-		if (!isLeft)
-		{
-			if (rightScore[i] == 0)
-			{
-				std::cout << "RIGHT GOAL!" << std::endl;
-				rightScore[i] = 1;
-				break;
-			}
-		}
+		rScore += 1;
+	}
+}
+
+void scoreCheckReset() {
+	if (lScore >= 3) 
+	{
+		std::cout << "Red Player Wins !!!!!!!!!" << std::endl;
+		
+		lScore = -1;
+		rScore = -1;
+	}
+	if ( rScore >= 3)
+	{
+		std::cout << "Blue Player Wins !!!!!!!!!" << std::endl;
+		
+		lScore = -1;
+		rScore = -1;
+	}
+}
+
+void checkIsReseting() {
+	if (lScore >= 3 || rScore >= 3) {
+		std::cout << "RESETING GAME!!!!!" << std::endl;
+		Sleep(1000);
 	}
 }

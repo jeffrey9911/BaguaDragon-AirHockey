@@ -23,7 +23,7 @@ struct Light {
 	float Attenuation;
 };
 
-#define MAX_LIGHTS 10
+#define MAX_LIGHTS 20
 // Our array of all lights
 uniform Light u_Lights[MAX_LIGHTS];
 // The number of enabled lights
