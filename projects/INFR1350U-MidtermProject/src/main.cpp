@@ -1,3 +1,4 @@
+//Student Name: Jeffrey Li - 100712344, Justin Lee - 100658626
 #include <Logging.h>
 #include <iostream>
 
@@ -229,6 +230,7 @@ glm::vec3 yellow = glm::vec3(1.0f, 1.0f, 0.0f);
 int lScore = -1;
 int rScore = -1;
 
+bool resetCheck = false;
 bool isWin = false;
 
 int main() {
@@ -311,7 +313,7 @@ int main() {
 
 		//// Puck
 		MeshResource::Sptr mesh_puck = ResourceManager::CreateAsset<MeshResource>("gObj_puck/puck.obj");
-		Texture2D::Sptr tex_puck = ResourceManager::CreateAsset<Texture2D>("gObj_puck/Black.jpg");
+		Texture2D::Sptr tex_puck = ResourceManager::CreateAsset<Texture2D>("gObj_puck/GoldenDark2.jpg");
 
 		//// Paddle
 		MeshResource::Sptr mesh_paddle = ResourceManager::CreateAsset<MeshResource>("gObj_paddle/paddle.obj");
@@ -839,6 +841,11 @@ int main() {
 		glfwPollEvents();
 		ImGuiHelper::StartFrame();
 		
+		// modify position of these two.... - Justin Lee: "seems location not matter much, so I just place it here."
+		checkIsReseting();
+		scoreCheckReset();
+		// Don't change the order of these two function
+
 		// Calculate the time since our last frame (dt)
 		double thisFrame = glfwGetTime();
 		float dt = static_cast<float>(thisFrame - lastFrame);
@@ -1110,10 +1117,7 @@ int main() {
 		}
 		
 		
-		// modify position of these two....
-		checkIsReseting();
-		scoreCheckReset();
-		// Don't change the order of these two function
+
 
 		// End our ImGui window
 		ImGui::End();
@@ -1121,6 +1125,7 @@ int main() {
 		VertexArrayObject::Unbind();
 
 		lastFrame = thisFrame;
+
 		ImGuiHelper::EndFrame();
 
 		glfwSwapBuffers(window);
@@ -1159,6 +1164,7 @@ void scoreCheckReset() {
 		
 		lScore = -1;
 		rScore = -1;
+		resetCheck = true;
 	}
 	if ( rScore >= 3)
 	{
@@ -1166,12 +1172,16 @@ void scoreCheckReset() {
 		
 		lScore = -1;
 		rScore = -1;
+		resetCheck = true;
 	}
 }
 
 void checkIsReseting() {
-	if (lScore >= 3 || rScore >= 3) {
+	GameObject::Sptr gObj_puck = scene->FindObjectByName("Puck");
+	if (resetCheck == true) {
 		std::cout << "RESETING GAME!!!!!" << std::endl;
+		gObj_puck->SetPostion(glm::vec3(0.0f, 0.0f, 4.0f));
+		resetCheck = false;
 		Sleep(1000);
 	}
 }
