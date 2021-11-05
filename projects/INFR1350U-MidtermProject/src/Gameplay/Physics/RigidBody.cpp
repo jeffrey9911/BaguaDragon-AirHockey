@@ -56,7 +56,7 @@ namespace Gameplay::Physics {
 
 	glm::vec3 RigidBody::GetVelocity() const {
 		btVector3 bodyVeloL = _body->getLinearVelocity();
-		btVector3 bodyVeloA = _body->getLinearVelocity();
+		btVector3 bodyVeloA = _body->getAngularVelocity();
 		return glm::vec3(bodyVeloL.getX()+bodyVeloA.getX(),
 			bodyVeloL.getY() + bodyVeloA.getY(),
 			bodyVeloL.getZ() + bodyVeloA.getZ());

@@ -564,13 +564,10 @@ int main() {
 			RenderComponent::Sptr renderer = gObj_edge1->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge1);
 			renderer->SetMaterial(boxMaterial);
-			RigidBody::Sptr physics = gObj_edge1->Add<RigidBody>(RigidBodyType::Static);
-			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
-			collider->SetScale(glm::vec3(2.980f, 1.0f, 1.0f));
-			TriggerVolume::Sptr volume = gObj_edge1->Add<TriggerVolume>();
-			volume->AddCollider(ConvexMeshCollider::Create());
-			
 
+			TriggerVolume::Sptr volume = gObj_edge1->Add<TriggerVolume>();
+			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
+			collider->SetScale(glm::vec3(2.980f, 1.0f, 1.0f));
 		}
 		GameObject::Sptr gObj_edge2 = scene->CreateGameObject("Edge2");
 		{
@@ -581,11 +578,10 @@ int main() {
 			RenderComponent::Sptr renderer = gObj_edge2->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge2);
 			renderer->SetMaterial(boxMaterial);
-			RigidBody::Sptr physics = gObj_edge2->Add<RigidBody>(RigidBodyType::Static);
-			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
-			collider->SetScale(glm::vec3(2.980f, 1.0f, 1.0f));
+
 			TriggerVolume::Sptr volume = gObj_edge2->Add<TriggerVolume>();
-			volume->AddCollider(collider);
+			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
+			collider->SetScale(glm::vec3(2.980f, 1.0f, 1.0f));
 		}
 		GameObject::Sptr gObj_edge3 = scene->CreateGameObject("Edge3");
 		{
@@ -596,11 +592,10 @@ int main() {
 			RenderComponent::Sptr renderer = gObj_edge3->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge3);
 			renderer->SetMaterial(boxMaterial);
-			RigidBody::Sptr physics = gObj_edge3->Add<RigidBody>(RigidBodyType::Static);
-			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
-			collider->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
+			
 			TriggerVolume::Sptr volume = gObj_edge3->Add<TriggerVolume>();
-			volume->AddCollider(collider);
+			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
+			collider->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
 		}
 		GameObject::Sptr gObj_edge4 = scene->CreateGameObject("Edge4");
 		{
@@ -611,11 +606,10 @@ int main() {
 			RenderComponent::Sptr renderer = gObj_edge4->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge4);
 			renderer->SetMaterial(boxMaterial);
-			RigidBody::Sptr physics = gObj_edge4->Add<RigidBody>(RigidBodyType::Static);
-			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
-			collider->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
+			
 			TriggerVolume::Sptr volume = gObj_edge4->Add<TriggerVolume>();
-			volume->AddCollider(collider);
+			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
+			collider->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
 		}
 		GameObject::Sptr gObj_edge5 = scene->CreateGameObject("Edge5");
 		{
@@ -626,11 +620,11 @@ int main() {
 			RenderComponent::Sptr renderer = gObj_edge5->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge5);
 			renderer->SetMaterial(boxMaterial);
-			RigidBody::Sptr physics = gObj_edge5->Add<RigidBody>(RigidBodyType::Static);
-			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
-			collider->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
+			
+
 			TriggerVolume::Sptr volume = gObj_edge5->Add<TriggerVolume>();
-			volume->AddCollider(collider);
+			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
+			collider->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
 		}
 		GameObject::Sptr gObj_edge6 = scene->CreateGameObject("Edge6");
 		{
@@ -641,11 +635,10 @@ int main() {
 			RenderComponent::Sptr renderer = gObj_edge6->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge6);
 			renderer->SetMaterial(boxMaterial);
-			RigidBody::Sptr physics = gObj_edge6->Add<RigidBody>(RigidBodyType::Static);
-			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
-			collider->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
+			
 			TriggerVolume::Sptr volume = gObj_edge6->Add<TriggerVolume>();
-			volume->AddCollider(collider);
+			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
+			collider->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
 		}
 		GameObject::Sptr gObj_edge7 = scene->CreateGameObject("Edge7");
 		{
@@ -656,11 +649,11 @@ int main() {
 			RenderComponent::Sptr renderer = gObj_edge7->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge7);
 			renderer->SetMaterial(boxMaterial);
-			RigidBody::Sptr physics = gObj_edge7->Add<RigidBody>(RigidBodyType::Static);
-			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
-			collider->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
+			
+
 			TriggerVolume::Sptr volume = gObj_edge7->Add<TriggerVolume>();
-			volume->AddCollider(collider);
+			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
+			collider->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
 		}
 		GameObject::Sptr gObj_edge8 = scene->CreateGameObject("Edge8");
 		{
@@ -671,11 +664,10 @@ int main() {
 			RenderComponent::Sptr renderer = gObj_edge8->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge8);
 			renderer->SetMaterial(boxMaterial);
-			RigidBody::Sptr physics = gObj_edge8->Add<RigidBody>(RigidBodyType::Static);
-			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
-			collider->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
+			
 			TriggerVolume::Sptr volume = gObj_edge8->Add<TriggerVolume>();
-			volume->AddCollider(collider);
+			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
+			collider->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
 		}
 		GameObject::Sptr gObj_edge9 = scene->CreateGameObject("Edge9");
 		{
@@ -686,11 +678,10 @@ int main() {
 			RenderComponent::Sptr renderer = gObj_edge9->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge9);
 			renderer->SetMaterial(boxMaterial);
-			RigidBody::Sptr physics = gObj_edge9->Add<RigidBody>(RigidBodyType::Static);
-			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
+			
+			TriggerVolume::Sptr volume = gObj_edge9->Add<TriggerVolume>();
+			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
-			//TriggerVolume::Sptr volume = gObj_edge9->Add<TriggerVolume>();
-			//volume->AddCollider(collider);
 		}
 		GameObject::Sptr gObj_edge10 = scene->CreateGameObject("Edge10");
 		{
@@ -701,11 +692,10 @@ int main() {
 			RenderComponent::Sptr renderer = gObj_edge10->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge10);
 			renderer->SetMaterial(boxMaterial);
-			RigidBody::Sptr physics = gObj_edge10->Add<RigidBody>(RigidBodyType::Static);
-			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
+			
+			TriggerVolume::Sptr volume = gObj_edge10->Add<TriggerVolume>();
+			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
-			//TriggerVolume::Sptr volume = gObj_edge10->Add<TriggerVolume>();
-			//volume->AddCollider(collider);
 		}
 		GameObject::Sptr gObj_edge11 = scene->CreateGameObject("Edge11");
 		{
@@ -716,11 +706,10 @@ int main() {
 			RenderComponent::Sptr renderer = gObj_edge11->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge11);
 			renderer->SetMaterial(boxMaterial);
-			RigidBody::Sptr physics = gObj_edge11->Add<RigidBody>(RigidBodyType::Static);
-			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
+			
+			TriggerVolume::Sptr volume = gObj_edge11->Add<TriggerVolume>();
+			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(2.980f, 1.0f, 1.0f));
-			//TriggerVolume::Sptr volume = gObj_edge11->Add<TriggerVolume>();
-			//volume->AddCollider(collider);
 		}
 		GameObject::Sptr gObj_edge12 = scene->CreateGameObject("Edge12");
 		{
@@ -731,11 +720,10 @@ int main() {
 			RenderComponent::Sptr renderer = gObj_edge12->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge12);
 			renderer->SetMaterial(boxMaterial);
-			RigidBody::Sptr physics = gObj_edge12->Add<RigidBody>(RigidBodyType::Static);
-			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
+
+			TriggerVolume::Sptr volume = gObj_edge12->Add<TriggerVolume>();
+			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(2.980f, 1.0f, 1.0f));
-			//TriggerVolume::Sptr volume = gObj_edge12->Add<TriggerVolume>();
-			//volume->AddCollider(collider);
 		}
 
 		
