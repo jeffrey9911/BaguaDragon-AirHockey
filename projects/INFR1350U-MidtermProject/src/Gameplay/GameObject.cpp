@@ -34,9 +34,7 @@ namespace Gameplay {
 	void GameObject::OnEnteredTrigger(const std::shared_ptr<Physics::TriggerVolume>& trigger) {
 		for (auto& component : _components) {
 			component->OnEnteredTrigger(trigger);
-			//std::cout << &component << std::endl;
 		}
-		//std::cout << "TRIGGER!!!" << std::endl;
 	}
 
 	void GameObject::OnLeavingTrigger(const std::shared_ptr<Physics::TriggerVolume>& trigger) {

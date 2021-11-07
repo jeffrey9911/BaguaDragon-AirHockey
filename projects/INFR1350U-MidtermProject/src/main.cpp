@@ -301,8 +301,8 @@ int main() {
 		}); 
 
 		//// Monkey & Box (will be removed later)
-		MeshResource::Sptr monkeyMesh = ResourceManager::CreateAsset<MeshResource>("Monkey.obj");
-		Texture2D::Sptr    boxTexture = ResourceManager::CreateAsset<Texture2D>("textures/box-diffuse.png");
+		//MeshResource::Sptr monkeyMesh = ResourceManager::CreateAsset<MeshResource>("Monkey.obj");
+		//Texture2D::Sptr    boxTexture = ResourceManager::CreateAsset<Texture2D>("textures/box-diffuse.png");
 		Texture2D::Sptr    monkeyTex  = ResourceManager::CreateAsset<Texture2D>("textures/monkey-uvMap.png");
 		
 		//// Table
@@ -356,22 +356,14 @@ int main() {
 //// Materials ////
 		#pragma region Material Creation
 
-		Material::Sptr boxMaterial = ResourceManager::CreateAsset<Material>();
+		Material::Sptr material_white = ResourceManager::CreateAsset<Material>();
 		{
-			boxMaterial->Name = "Box";
-			boxMaterial->MatShader = scene->BaseShader;
-			boxMaterial->Texture = boxTexture;
-			boxMaterial->Shininess = 2.0f;
+			material_white->Name = "White";
+			material_white->MatShader = scene->BaseShader;
+			material_white->Texture = tex_white;
+			material_white->Shininess = 2.0f;
 		}
 
-		//// Monkey
-		Material::Sptr monkeyMaterial = ResourceManager::CreateAsset<Material>();
-		{
-			monkeyMaterial->Name = "Monkey";
-			monkeyMaterial->MatShader = scene->BaseShader;
-			monkeyMaterial->Texture = monkeyTex;
-			monkeyMaterial->Shininess = 256.0f;
-		}
 
 		//// Table
 		Material::Sptr material_table = ResourceManager::CreateAsset<Material>();
@@ -521,7 +513,7 @@ int main() {
 			ICollider::Sptr collider = physics->AddCollider(ConvexMeshCollider::Create());
 
 			BounceBehaviour::Sptr bounceTrigger = gObj_puck->Add<BounceBehaviour>();
-			bounceTrigger->rigidOBJ = physics;
+			//bounceTrigger->rigidOBJ = physics;
 		}
 
 		//// Paddle_red
@@ -555,171 +547,173 @@ int main() {
 		}
 		//// Edge
 		#pragma region 12 Edges
-		GameObject::Sptr gObj_edge1 = scene->CreateGameObject("Edge1");
+		GameObject::Sptr gObj_edge1 = scene->CreateGameObject("Edge");
 		{
 			edgeID.push_back(gObj_edge1->GUID);
-			gObj_edge1->SetPostion(glm::vec3(-17.270f, 5.540f, -8.02f));
+			gObj_edge1->SetPostion(glm::vec3(-17.230f, 5.540f, -8.02f));
 			gObj_edge1->SetRotation(glm::vec3(0.0f, 0.0f, -93.5f));
 			gObj_edge1->SetScale(glm::vec3(2.980f, 1.0f, 1.0f));
 			RenderComponent::Sptr renderer = gObj_edge1->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge1);
-			renderer->SetMaterial(boxMaterial);
+			renderer->SetMaterial(material_white);
 
-			TriggerVolume::Sptr volume = gObj_edge1->Add<TriggerVolume>();
+			//TriggerVolume::Sptr volume = gObj_edge1->Add<TriggerVolume>();
+			BounceBehaviour::Sptr bounce = gObj_edge1->Add<BounceBehaviour>();
+			TriggerVolume::Sptr volume = bounce->AddComponent<TriggerVolume>();
 			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(2.980f, 1.0f, 1.0f));
 		}
-		GameObject::Sptr gObj_edge2 = scene->CreateGameObject("Edge2");
+		GameObject::Sptr gObj_edge2 = scene->CreateGameObject("Edge");
 		{
 			edgeID.push_back(gObj_edge2->GUID);
-			gObj_edge2->SetPostion(glm::vec3(-17.270f, -5.540f, -8.02f));
+			gObj_edge2->SetPostion(glm::vec3(-17.230f, -5.540f, -8.02f));
 			gObj_edge2->SetRotation(glm::vec3(0.0f, 0.0f, -86.5f));
 			gObj_edge2->SetScale(glm::vec3(2.980f, 1.0f, 1.0f));
 			RenderComponent::Sptr renderer = gObj_edge2->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge2);
-			renderer->SetMaterial(boxMaterial);
+			renderer->SetMaterial(material_white);
 
 			TriggerVolume::Sptr volume = gObj_edge2->Add<TriggerVolume>();
 			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(2.980f, 1.0f, 1.0f));
 		}
-		GameObject::Sptr gObj_edge3 = scene->CreateGameObject("Edge3");
+		GameObject::Sptr gObj_edge3 = scene->CreateGameObject("Edge");
 		{
 			edgeID.push_back(gObj_edge3->GUID);
-			gObj_edge3->SetPostion(glm::vec3(-12.790f, 11.3f, -8.02f));
+			gObj_edge3->SetPostion(glm::vec3(-12.790f, 11.280f, -8.02f));
 			gObj_edge3->SetRotation(glm::vec3(0.0f, 0.0f, -147.1));
 			gObj_edge3->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
 			RenderComponent::Sptr renderer = gObj_edge3->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge3);
-			renderer->SetMaterial(boxMaterial);
+			renderer->SetMaterial(material_white);
 			
 			TriggerVolume::Sptr volume = gObj_edge3->Add<TriggerVolume>();
 			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
 		}
-		GameObject::Sptr gObj_edge4 = scene->CreateGameObject("Edge4");
+		GameObject::Sptr gObj_edge4 = scene->CreateGameObject("Edge");
 		{
 			edgeID.push_back(gObj_edge4->GUID);
-			gObj_edge4->SetPostion(glm::vec3(-12.790f, -11.3f, -8.02f));
+			gObj_edge4->SetPostion(glm::vec3(-12.790f, -11.280f, -8.02f));
 			gObj_edge4->SetRotation(glm::vec3(0.0f, 0.0f, -32.9f));
 			gObj_edge4->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
 			RenderComponent::Sptr renderer = gObj_edge4->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge4);
-			renderer->SetMaterial(boxMaterial);
+			renderer->SetMaterial(material_white);
 			
 			TriggerVolume::Sptr volume = gObj_edge4->Add<TriggerVolume>();
 			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
 		}
-		GameObject::Sptr gObj_edge5 = scene->CreateGameObject("Edge5");
+		GameObject::Sptr gObj_edge5 = scene->CreateGameObject("Edge");
 		{
 			edgeID.push_back(gObj_edge5->GUID);
-			gObj_edge5->SetPostion(glm::vec3(-4.210f, 12.810f, -8.02f));
+			gObj_edge5->SetPostion(glm::vec3(-4.210f, 12.800f, -8.02f));
 			gObj_edge5->SetRotation(glm::vec3(0.0f, 0.0f, 163.7f));
 			gObj_edge5->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
 			RenderComponent::Sptr renderer = gObj_edge5->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge5);
-			renderer->SetMaterial(boxMaterial);
+			renderer->SetMaterial(material_white);
 			
 
 			TriggerVolume::Sptr volume = gObj_edge5->Add<TriggerVolume>();
 			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
 		}
-		GameObject::Sptr gObj_edge6 = scene->CreateGameObject("Edge6");
+		GameObject::Sptr gObj_edge6 = scene->CreateGameObject("Edge");
 		{
 			edgeID.push_back(gObj_edge6->GUID);
-			gObj_edge6->SetPostion(glm::vec3(-4.210f, -12.810f, -8.02f));
+			gObj_edge6->SetPostion(glm::vec3(-4.210f, -12.800f, -8.02f));
 			gObj_edge6->SetRotation(glm::vec3(0.0f, 0.0f, 16.3f));
 			gObj_edge6->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
 			RenderComponent::Sptr renderer = gObj_edge6->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge6);
-			renderer->SetMaterial(boxMaterial);
+			renderer->SetMaterial(material_white);
 			
 			TriggerVolume::Sptr volume = gObj_edge6->Add<TriggerVolume>();
 			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
 		}
-		GameObject::Sptr gObj_edge7 = scene->CreateGameObject("Edge7");
+		GameObject::Sptr gObj_edge7 = scene->CreateGameObject("Edge");
 		{
 			edgeID.push_back(gObj_edge7->GUID);
-			gObj_edge7->SetPostion(glm::vec3(4.210f, 12.810f, -8.02f));
+			gObj_edge7->SetPostion(glm::vec3(4.210f, 12.800f, -8.02f));
 			gObj_edge7->SetRotation(glm::vec3(0.0f, 0.0f, -163.7f));
 			gObj_edge7->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
 			RenderComponent::Sptr renderer = gObj_edge7->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge7);
-			renderer->SetMaterial(boxMaterial);
+			renderer->SetMaterial(material_white);
 			
 
 			TriggerVolume::Sptr volume = gObj_edge7->Add<TriggerVolume>();
 			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
 		}
-		GameObject::Sptr gObj_edge8 = scene->CreateGameObject("Edge8");
+		GameObject::Sptr gObj_edge8 = scene->CreateGameObject("Edge");
 		{
 			edgeID.push_back(gObj_edge8->GUID);
-			gObj_edge8->SetPostion(glm::vec3(4.210f, -12.810f, -8.02f));
+			gObj_edge8->SetPostion(glm::vec3(4.210f, -12.800f, -8.02f));
 			gObj_edge8->SetRotation(glm::vec3(0.0f, 0.0f, -16.3f));
 			gObj_edge8->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
 			RenderComponent::Sptr renderer = gObj_edge8->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge8);
-			renderer->SetMaterial(boxMaterial);
+			renderer->SetMaterial(material_white);
 			
 			TriggerVolume::Sptr volume = gObj_edge8->Add<TriggerVolume>();
 			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(4.430f, 1.0f, 1.0f));
 		}
-		GameObject::Sptr gObj_edge9 = scene->CreateGameObject("Edge9");
+		GameObject::Sptr gObj_edge9 = scene->CreateGameObject("Edge");
 		{
 			edgeID.push_back(gObj_edge9->GUID);
-			gObj_edge9->SetPostion(glm::vec3(12.790f, 11.3f, -8.02f));
+			gObj_edge9->SetPostion(glm::vec3(12.790f, 11.280f, -8.02f));
 			gObj_edge9->SetRotation(glm::vec3(0.0f, 0.0f, 147.1f));
 			gObj_edge9->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
 			RenderComponent::Sptr renderer = gObj_edge9->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge9);
-			renderer->SetMaterial(boxMaterial);
+			renderer->SetMaterial(material_white);
 			
 			TriggerVolume::Sptr volume = gObj_edge9->Add<TriggerVolume>();
 			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
 		}
-		GameObject::Sptr gObj_edge10 = scene->CreateGameObject("Edge10");
+		GameObject::Sptr gObj_edge10 = scene->CreateGameObject("Edge");
 		{
 			edgeID.push_back(gObj_edge10->GUID);
-			gObj_edge10->SetPostion(glm::vec3(12.790f, -11.3f, -8.02f));
+			gObj_edge10->SetPostion(glm::vec3(12.790f, -11.280f, -8.02f));
 			gObj_edge10->SetRotation(glm::vec3(0.0f, 0.0f, 32.9f));
 			gObj_edge10->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
 			RenderComponent::Sptr renderer = gObj_edge10->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge10);
-			renderer->SetMaterial(boxMaterial);
+			renderer->SetMaterial(material_white);
 			
 			TriggerVolume::Sptr volume = gObj_edge10->Add<TriggerVolume>();
 			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(5.080f, 1.0f, 1.0f));
 		}
-		GameObject::Sptr gObj_edge11 = scene->CreateGameObject("Edge11");
+		GameObject::Sptr gObj_edge11 = scene->CreateGameObject("Edge");
 		{
 			edgeID.push_back(gObj_edge11->GUID);
-			gObj_edge11->SetPostion(glm::vec3(17.270f, 5.540f, -8.02f));
+			gObj_edge11->SetPostion(glm::vec3(17.230f, 5.540f, -8.02f));
 			gObj_edge11->SetRotation(glm::vec3(0.0f, 0.0f, 93.5f));
 			gObj_edge11->SetScale(glm::vec3(2.980f, 1.0f, 1.0f));
 			RenderComponent::Sptr renderer = gObj_edge11->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge11);
-			renderer->SetMaterial(boxMaterial);
+			renderer->SetMaterial(material_white);
 			
 			TriggerVolume::Sptr volume = gObj_edge11->Add<TriggerVolume>();
 			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
 			collider->SetScale(glm::vec3(2.980f, 1.0f, 1.0f));
 		}
-		GameObject::Sptr gObj_edge12 = scene->CreateGameObject("Edge12");
+		GameObject::Sptr gObj_edge12 = scene->CreateGameObject("Edge");
 		{
 			edgeID.push_back(gObj_edge12->GUID);
-			gObj_edge12->SetPostion(glm::vec3(17.270f, -5.540f, -8.02f));
+			gObj_edge12->SetPostion(glm::vec3(17.230f, -5.540f, -8.02f));
 			gObj_edge12->SetRotation(glm::vec3(0.0f, 0.0f, 86.5f));
 			gObj_edge12->SetScale(glm::vec3(2.980f, 1.0f, 1.0f));
 			RenderComponent::Sptr renderer = gObj_edge12->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edge12);
-			renderer->SetMaterial(boxMaterial);
+			renderer->SetMaterial(material_white);
 
 			TriggerVolume::Sptr volume = gObj_edge12->Add<TriggerVolume>();
 			ICollider::Sptr collider = volume->AddCollider(ConvexMeshCollider::Create());
@@ -740,8 +734,6 @@ int main() {
 			RenderComponent::Sptr renderer = gObj_edgeS1->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edgeS1);
 			renderer->SetMaterial(material_edge);
-
-			RigidBody::Sptr physics = gObj_edgeS1->Add<RigidBody>(RigidBodyType::Static);
 		}
 		GameObject::Sptr gObj_edgeS2 = scene->CreateGameObject("Edge_skin2");
 		{
@@ -750,8 +742,6 @@ int main() {
 			RenderComponent::Sptr renderer = gObj_edgeS2->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edgeS2);
 			renderer->SetMaterial(material_edge);
-
-			RigidBody::Sptr physics = gObj_edgeS2->Add<RigidBody>(RigidBodyType::Static);
 		}
 		GameObject::Sptr gObj_edgeS3 = scene->CreateGameObject("Edge_skin3");
 		{
@@ -760,8 +750,6 @@ int main() {
 			RenderComponent::Sptr renderer = gObj_edgeS3->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edgeS3);
 			renderer->SetMaterial(material_edge);
-
-			RigidBody::Sptr physics = gObj_edgeS3->Add<RigidBody>(RigidBodyType::Static);
 		}
 		GameObject::Sptr gObj_edgeS4 = scene->CreateGameObject("Edge_skin4");
 		{
@@ -770,8 +758,6 @@ int main() {
 			RenderComponent::Sptr renderer = gObj_edgeS4->Add<RenderComponent>();
 			renderer->SetMesh(mesh_edgeS4);
 			renderer->SetMaterial(material_edge);
-
-			RigidBody::Sptr physics = gObj_edgeS4->Add<RigidBody>(RigidBodyType::Static);
 		}
 		
 		
@@ -1058,7 +1044,6 @@ int main() {
 
 		// Apply colliding
 		BounceBehaviour::Sptr bounce_puck = scene->FindObjectByName("Puck")->Get<BounceBehaviour>();
-		bounce_puck->rigidOBJ = rigid_puck;
 
 		glm::vec3 puckPos = gObj_puck->GetPosition();
 		if (puckPos.x <= -17.6f) // RIGHT WINS 

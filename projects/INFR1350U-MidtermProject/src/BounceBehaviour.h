@@ -11,11 +11,17 @@ public:
 	BounceBehaviour();
 	virtual ~BounceBehaviour();
 
+	Gameplay::GameObject* gameObj;
 	Gameplay::Physics::RigidBody::Sptr rigidOBJ;
-	
 
+	/// <summary>
+	/// Overide
+	/// Bounce behaviour on onEnteredTrigger
+	/// </summary>
+	/// <param name="trigger"></param>
 	virtual void OnEnteredTrigger(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger) override;
-	virtual void OnLeavingTrigger(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger) override;
+
+	virtual void OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>& trigger) override;
 
 	
 	virtual void Awake() override;
@@ -25,8 +31,4 @@ public:
 
 
 	MAKE_TYPENAME(BounceBehaviour);
-
-protected:
-
-	RenderComponent::Sptr _renderer;
 };
