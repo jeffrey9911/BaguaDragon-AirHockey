@@ -13,6 +13,9 @@ public:
 
 	Gameplay::GameObject* gameObj;
 	Gameplay::Physics::RigidBody::Sptr rigidOBJ;
+	bool isInCollision;
+	glm::vec3 reflectionVelocity;
+	glm::vec3 repelVelocity;
 
 	/// <summary>
 	/// Overide
@@ -21,7 +24,13 @@ public:
 	/// <param name="trigger"></param>
 	virtual void OnEnteredTrigger(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger) override;
 
+	virtual void OnLeavingTrigger(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger) override;
+
 	virtual void OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>& trigger) override;
+
+	virtual void OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>& trigger) override;
+
+	
 
 	
 	virtual void Awake() override;

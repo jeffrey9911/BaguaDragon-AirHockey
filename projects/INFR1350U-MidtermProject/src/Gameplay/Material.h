@@ -35,6 +35,9 @@ namespace Gameplay {
 		/// </summary>
 		virtual void Apply();
 
+		template <typename T>
+		void Set(const std::string& name, const T& value);
+
 		/// <summary>
 		/// Loads a material from a JSON blob
 		/// </summary>
