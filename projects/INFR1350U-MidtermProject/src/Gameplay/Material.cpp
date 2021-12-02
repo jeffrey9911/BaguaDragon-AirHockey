@@ -15,10 +15,6 @@ namespace Gameplay {
 		}
 	}
 
-	template <typename T>
-	void Material::Set(const std::string& name, const T& value) {
-		MatShader->SetUniform(name, value);
-	}
 
 	Material::Sptr Material::FromJson(const nlohmann::json& data) {
 		Material::Sptr result = std::make_shared<Material>();
