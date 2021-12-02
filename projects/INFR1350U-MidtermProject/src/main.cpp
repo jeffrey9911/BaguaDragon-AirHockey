@@ -807,7 +807,7 @@ int main() {
 
 	bool isFirstClick = true;
 	
-	
+	float countDown = 2;
 
 ///// Game loop /////
 #pragma region Game Loop
@@ -959,6 +959,19 @@ int main() {
 		/// <returns></returns>
 		GameObject::Sptr gObj_puck = scene->FindObjectByName("Puck");
 		RigidBody::Sptr rigid_puck = gObj_puck->Get<RigidBody>();
+		
+		while (countDown > 0)
+			countDown -= dt;
+
+
+		
+		if (gObj_puck->Get<BounceBehaviour>()->isInCollision && countDown <= 0)
+		{
+			rigid_puck->resetVelocity();
+			rigid_puck->ApplyImpulse(gObj_puck->Get<BounceBehaviour>()->repelVelocity);
+			countDown = 1;
+		}
+
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) 
 		{
 			//std::cout << "APPLYING FORCE" << std::endl;

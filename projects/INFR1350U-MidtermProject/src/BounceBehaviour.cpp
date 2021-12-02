@@ -6,14 +6,17 @@
 BounceBehaviour::BounceBehaviour() :
 	IComponent(),
 	gameObj(nullptr),
-	rigidOBJ(nullptr)
+	rigidOBJ(nullptr),
+	isInCollision(false)
 { }
 BounceBehaviour::~BounceBehaviour() = default;
 
 void BounceBehaviour::OnEnteredTrigger(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger)
 {
+	printf("Enter!!");
 	if (rigidOBJ && gameObj->Name == "Puck") {
-		//std::cout << "PUCK BOUNCE" << std::endl;
+		isInCollision = true;
+		
 		glm::vec3 rigiVelo = rigidOBJ->GetVelocity();
 		rigiVelo.z = 0.0f;
 
@@ -34,9 +37,19 @@ void BounceBehaviour::OnEnteredTrigger(const std::shared_ptr<Gameplay::Physics::
 
 		refVelo *= speed * 0.5f;
 
-		rigidOBJ->resetVelocity();
-		rigidOBJ->ApplyImpulse(refVelo);
+		//rigidOBJ->resetVelocity();
+		//rigidOBJ->ApplyImpulse(refVelo);
+		reflectionVelocity = refVelo;
+		repelVelocity = glm::normalize(refVelo) * 10.0f;
 	}
+}
+
+void BounceBehaviour::OnLeavingTrigger(const std::shared_ptr<Gameplay::Physics::TriggerVolume>& trigger)
+{
+	rigidOBJ->resetVelocity();
+	rigidOBJ->ApplyImpulse(reflectionVelocity);
+	isInCollision = false;
+	
 }
 
 void BounceBehaviour::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Physics::RigidBody>& trigger) {
@@ -60,6 +73,13 @@ void BounceBehaviour::OnTriggerVolumeEntered(const std::shared_ptr<Gameplay::Phy
 		trigger->ApplyImpulse(repelVelo);
 	}
 	*/
+	
+}
+
+void BounceBehaviour::OnTriggerVolumeLeaving(const std::shared_ptr<Gameplay::Physics::RigidBody>& trigger)
+{
+	
+
 }
 
 void BounceBehaviour::Awake() {
